@@ -1,0 +1,58 @@
+// --- CONFIGURACIÓN ---
+L = 170; A = 85; H = 25; T = 4; P = 3;
+separacion = 60; // Tapa elevada para que veas los cortes
+
+// --- 1. TAPA (ROJA) - AQUÍ ESTÁN LOS MANDOS ---
+translate([0, 0, separacion]) color("red", 0.5) {
+    difference() {
+        // La plancha fina
+        cube([L, A, T], center=true);
+        
+        // --- HUECOS DE INTERFAZ (Ahora en la tapa roja) ---
+        // Pantalla OLED (Izquierda)
+        translate([-45, 0, 0]) cube([26, 15, 20], center=true);
+        
+        // Joystick (Derecha)
+        translate([40, 0, 0]) cylinder(h=20, r=13, center=true, $fn=50);
+        
+        // 3 Botones (Arco)
+        translate([65, 18, 0])  cylinder(h=20, r=4, center=true, $fn=15);
+        translate([72, 0, 0])   cylinder(h=20, r=4, center=true, $fn=15);
+        translate([65, -18, 0]) cylinder(h=20, r=4, center=true, $fn=15);
+        
+        // Switch de apagado
+        translate([30, -32, 0]) cube([12, 7, 20], center=true);
+
+        // Agujeros para los 4 tornillos
+        for(x=[-L/2+7, L/2-7]) for(y=[-A/2+7, A/2-7])
+            translate([x,y,0]) cylinder(h=20, r=2, center=true, $fn=20);
+
+        // --- AÑADIDOS EXTRA EN LA TAPA ---
+        // Agujero para LED de estado (3mm de diámetro)
+        translate([-20, -32, 0]) cylinder(h=20, r=1.5, center=true, $fn=15);
+
+        // Muesca para el cable USB (en el borde izquierdo)
+        translate([-L/2 + 2, 0, 0]) cube([10, 12, 20], center=true);
+    }
+}
+
+// --- 2. CUERPO (GRIS) - SOLO CONTENEDOR Y CORREAS ---
+color("gray") {
+    difference() {
+        // Bloque base
+        cube([L, A, H], center=true);
+        
+        // VACIADO INTERIOR (Para que entren los componentes que cuelgan de la tapa)
+        translate([0, 0, P]) cube([L-P*2, A-P*2, H+5], center=true);
+        
+        // AGUJEROS TORNILLOS (Para que rosquen los tornillos de la tapa)
+        for(x=[-L/2+7, L/2-7]) for(y=[-A/2+7, A/2-7])
+            translate([x,y,0]) cylinder(h=100, r=1.6, center=true, $fn=15);
+            
+        // 4 RANURAS CORREA (En el suelo de la caja)
+        for(x=[-55, 55]) {
+            translate([x, A/2-5, -H/2]) cube([30, 5, 100], center=true);
+            translate([x, -A/2+5, -H/2]) cube([30, 5, 100], center=true);
+        }
+    }
+}
